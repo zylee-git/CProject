@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#define COUNT 100
 using namespace std;
 
 typedef struct NODE
@@ -65,12 +66,16 @@ int main()
 {
     int tmp, m, i, op;
     string line, result;
-    node *head = new node();
+    node* head[COUNT];
+    for (i = 0; i < COUNT;i++)
+    {
+        head[i] = new node();
+    }
     getline(cin, line);
     istringstream iss(line);
     while (iss >> tmp)
     {
-        add(head, tmp);
+        add(head[tmp%COUNT], tmp);
     }
     scanf("%d", &m);
     for (i = 0; i < m; i++)
@@ -79,13 +84,13 @@ int main()
         switch (op)
         {
         case 1:
-            result += to_string(seekbook(head, tmp));
+            result += to_string(seekbook(head[tmp%COUNT], tmp));
             break;
         case 2:
-            result += to_string(borrowbook(head, tmp));
+            result += to_string(borrowbook(head[tmp%COUNT], tmp));
             break;
         case 3:
-            result += to_string(returnbook(head, tmp));
+            result += to_string(returnbook(head[tmp%COUNT], tmp));
             break;
         }
     }

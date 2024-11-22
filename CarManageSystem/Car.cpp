@@ -1,0 +1,199 @@
+#include<iostream>
+#include"CarManageSystem.h"
+
+using namespace std;
+
+/*
+* ???????????????
+* ????????????????????????в??????
+*/
+void searchByNum(string n)
+{
+	ifstream cf("cars.dat");
+	string line, tempNum, tempType, tempColor,tempYear;
+	while (getline(cf, line))
+	{
+		istringstream sline(line);
+		getline(sline, tempNum, ',');
+		getline(sline, tempType, ',');
+		getline(sline, tempColor, ',');
+		getline(sline, tempYear, ',');
+		if (tempNum == n)
+		{
+			cout << "????? : " << tempNum << endl;
+			cout << "???? : " << tempType << endl;
+			cout << "??? : " << tempColor << endl;
+			cout << "??? : " << tempYear << endl;
+			cout << endl;
+		}
+	}
+}
+
+/*
+* ???????????????
+* ???????????????????????в??????
+*/
+void searchByType(string t)
+{
+	ifstream cf("cars.dat");
+	string line, tempNum, tempType, tempColor, tempYear;
+	while (getline(cf, line))
+	{
+		istringstream sline(line);
+		getline(sline, tempNum, ',');
+		getline(sline, tempType, ',');
+		getline(sline, tempColor, ',');
+		getline(sline, tempYear, ',');
+		if (tempType == t)
+		{
+			cout << "????? : " << tempNum << endl;
+			cout << "???? : " << tempType << endl;
+			cout << "??? : " << tempColor << endl;
+			cout << "??? : " << tempYear << endl;
+			cout << endl;
+		}
+	}
+}
+
+/*
+* ??????????
+* ????????????????????????в??????
+* ????????true???????false
+*/
+bool seekCar(string n)
+{
+	ifstream cf("cars.dat");
+	string line, tempNum, tempType, tempColor, tempYear;
+	while (getline(cf, line))
+	{
+		istringstream sline(line);
+		getline(sline, tempNum, ',');
+		getline(sline, tempType, ',');
+		getline(sline, tempColor, ',');
+		getline(sline, tempYear, ',');
+		if (tempNum == n) return true;
+	}
+	return false;
+}
+
+/*
+* ???????
+* ????????????????????????в???????????
+* ??????????true???????????false
+*/
+bool delByNum(string n)
+{
+	char c;
+	if (!seekCar(n)) return false;
+	ifstream cf("cars.dat");
+	ofstream of("temp.dat");
+	if (!cf.is_open() || !of.is_open()) return false;
+	string line, tempNum, tempType, tempColor, tempYear;
+	while (getline(cf, line))
+	{
+		istringstream sline(line);
+		getline(sline, tempNum, ',');
+		getline(sline, tempType, ',');
+		getline(sline, tempColor, ',');
+		getline(sline, tempYear, ',');
+		if (tempNum != n)
+		{
+			of << line << endl;
+		}
+		else
+		{
+			cout << "????? : " << tempNum << endl;
+			cout << "???? : " << tempType << endl;
+			cout << "??? : " << tempColor << endl;
+			cout << "??? : " << tempYear << endl;
+			cout << "???????ó??????(????y/Y???)";
+			cin >> c;
+			if (c != 'y' && c != 'Y') of << line << endl;
+		}
+	}
+	cf.close();
+	of.close();
+	remove("cars.dat");
+	rename("temp.dat", "cars.dat");
+	return true;
+}
+
+/*
+* ?????????
+* ????????????????????????в????????????????
+* ?????????true???????????false
+*/
+bool changeCar(string n)
+{
+	char c;
+	if (!seekCar(n)) return false;
+	ifstream cf("cars.dat");
+	ofstream of("temp.dat");
+	if (!cf.is_open() || !of.is_open()) return false;
+	string line, tempNum, tempType, tempColor, tempYear, temp;
+	while (getline(cf, line))
+	{
+		istringstream sline(line);
+		ostringstream osline;
+		getline(sline, tempNum, ',');
+		getline(sline, tempType, ',');
+		getline(sline, tempColor, ',');
+		getline(sline, tempYear, ',');
+		if (tempNum != n)
+		{
+			of << line << endl;
+		}
+		else
+		{
+			cout << "????? : " << tempNum << endl;
+			cout << "???? : " << tempType << endl;
+			cout << "??? : " << tempColor << endl;
+			cout << "??? : " << tempYear << endl;
+			cout << "?????????????????(????1????????????2???????????3????????????4?????????????????)" << endl;
+			cout << "????????? : ";
+			cin >> c;
+			cout << "??????????????????? : ";
+			cin >> temp;
+			switch (c)
+			{
+			case '1':
+				osline << temp << ',' << tempType << ',' << tempColor << ',' << tempYear << ',';
+				line = osline.str();
+				break;
+			case '2':
+				osline << tempNum << ',' << temp << ',' << tempColor << ',' << tempYear << ',';
+				line = osline.str();
+				break;
+			case '3':
+				osline << tempNum << ',' << tempType << ',' << temp << ',' << tempYear << ',';
+				line = osline.str();
+				break;
+			case '4':
+				osline << tempNum << ',' << tempType << ',' << tempColor << ',' << temp << ',';
+				line = osline.str();
+				break;
+			default:
+				break;
+			}
+			of << line << endl;
+		}
+	}
+	cf.close();
+	of.close();
+	remove("cars.dat");
+	rename("temp.dat", "cars.dat");
+	return true;
+}
+
+void operator<<(ostream& os, const Car& c)
+{
+	os << c.carNum << ',' << c.carType << ',' << c.color << ',' << c.year << ',';
+}
+
+void Car::toFile() const
+{
+	ofstream uf("cars.dat", ios_base::app);
+	uf << *this;
+	uf << endl;
+	uf.close();
+}
